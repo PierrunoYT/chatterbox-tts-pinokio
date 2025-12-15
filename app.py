@@ -1,7 +1,6 @@
 import gradio as gr
 import torchaudio as ta
 from chatterbox.tts import ChatterboxTTS
-from chatterbox.tts_turbo import ChatterboxTurboTTS
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS
 import devicetorch
 import torch
@@ -65,6 +64,9 @@ def load_turbo_model(hf_token_input):
         return "❌ Please enter your Hugging Face token first"
     
     try:
+        # Import ChatterboxTurboTTS only when needed
+        from chatterbox.tts_turbo import ChatterboxTurboTTS
+        
         print(f"Attempting to login with provided token...")
         login(token=hf_token_input.strip())
         print("✅ Logged in to Hugging Face")
@@ -76,6 +78,10 @@ def load_turbo_model(hf_token_input):
         models['turbo'] = turbo_model
         print("✅ Turbo model loaded!")
         return "✅ Turbo model loaded successfully! You can now use it for generation."
+    except ImportError as e:
+        error_msg = f"❌ ChatterboxTurboTTS not available in installed chatterbox package. Error: {str(e)}"
+        print(error_msg)
+        return error_msg
     except Exception as e:
         error_msg = f"❌ Failed to load Turbo model: {str(e)}"
         print(error_msg)
@@ -164,26 +170,7 @@ def get_audio_info(audio_file):
         return f"❌ Error reading audio: {str(e)}"
 
 # Create the Gradio interface
-with gr.Blocks(
-    title="Chatterbox TTS",
-    theme=gr.themes.Soft(),
-    css="""
-    .gradio-container {
-        max-width: 1200px !important;
-    }
-    .main-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    .feature-box {
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 1rem;
-        margin: 1rem 0;
-        background: #f9f9f9;
-    }
-    """
-) as app:
+with gr.Blocks(title="Chatterbox TTS") as app:
     
     with gr.Row():
         gr.Markdown(
@@ -467,5 +454,22 @@ if __name__ == "__main__":
         server_port=7860,
         share=False,
         show_error=True,
-        quiet=False
+        quiet=False,
+        theme=gr.themes.Soft(),
+        css="""
+        .gradio-container {
+            max-width: 1200px !important;
+        }
+        .main-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .feature-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: #f9f9f9;
+        }
+        """
     ) 
