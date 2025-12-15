@@ -2,6 +2,7 @@ transformers
 accelerate
 diffusers
 gradio==5.50
+safehttpx
 devicetorch
 numpy
 chatterbox-tts
