@@ -64,32 +64,21 @@ def load_turbo_model(hf_token_input):
         return "❌ Please enter your Hugging Face token first"
     
     try:
+        # Set the HF token in environment for the download
+        import os
+        os.environ['HF_TOKEN'] = hf_token_input.strip()
+        
         print(f"Attempting to login with provided token...")
         login(token=hf_token_input.strip())
         print("✅ Logged in to Hugging Face")
         
-        print("Loading Chatterbox-Turbo from Hugging Face...")
-        # Try to import and load the turbo model
-        try:
-            from chatterbox.tts_turbo import ChatterboxTurboTTS
-            turbo_model = ChatterboxTurboTTS.from_pretrained("PierrunoYT/chatterbox-turbo")
-        except ImportError:
-            # If tts_turbo doesn't exist, try loading as a regular Chatterbox model
-            print("⚠️ ChatterboxTurboTTS not found, trying as regular ChatterboxTTS...")
-            from transformers import AutoModel
-            turbo_model = AutoModel.from_pretrained("PierrunoYT/chatterbox-turbo", trust_remote_code=True)
-        
-        # Move model to device
-        if hasattr(turbo_model, 'model'):
-            turbo_model.model = turbo_model.model.to(device)
-        else:
-            turbo_model = turbo_model.to(device)
-            
-        models['turbo'] = turbo_model
+        print("Loading Chatterbox-Turbo...")
+        from chatterbox.tts_turbo import ChatterboxTurboTTS
+        models['turbo'] = ChatterboxTurboTTS.from_pretrained(device=device)
         print("✅ Turbo model loaded!")
         return "✅ Turbo model loaded successfully! You can now use it for generation."
     except Exception as e:
-        error_msg = f"❌ Failed to load Turbo model: {str(e)}\n\nNote: The Turbo model may not be publicly available yet. You can use the Multilingual or Original models instead."
+        error_msg = f"❌ Failed to load Turbo model: {str(e)}\n\nMake sure you have the latest chatterbox-tts package installed."
         print(error_msg)
         return error_msg
 
