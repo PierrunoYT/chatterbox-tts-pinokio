@@ -1,10 +1,10 @@
 transformers
 accelerate
 diffusers
-gradio
+gradio==5.50
 devicetorch
 numpy
-chatterbox-tts>=0.1.2
+chatterbox-tts
 scipy
 librosa
 peft
