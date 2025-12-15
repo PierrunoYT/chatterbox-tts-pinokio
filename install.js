@@ -7,7 +7,7 @@ module.exports = {
         venv: "env",                // Edit this to customize the venv folder path
         message: [
           "uv pip install numpy",
-          "uv pip uninstall -y chatterbox-tts gradio",
+          "uv pip uninstall chatterbox-tts gradio",
           "uv pip install -r requirements.txt"
         ],
       }
