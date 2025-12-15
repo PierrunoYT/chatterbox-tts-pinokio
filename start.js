@@ -6,7 +6,10 @@ module.exports = {
       method: "shell.run",
       params: {
         venv: "env",                // Edit this to customize the venv folder path
-        env: { },                   // Edit this to customize environment variables (see documentation)
+        env: { 
+          // Uncomment and add your Hugging Face token if needed:
+          // HF_TOKEN: "your_huggingface_token_here"
+        },                   // Edit this to customize environment variables (see documentation)
         message: [
           "python app.py",    // Edit with your custom commands
         ],

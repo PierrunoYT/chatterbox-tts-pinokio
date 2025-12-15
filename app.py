@@ -9,6 +9,18 @@ import os
 import tempfile
 import time
 from pathlib import Path
+from huggingface_hub import login
+
+# Login to Hugging Face if token is available
+hf_token = os.environ.get('HF_TOKEN')
+if hf_token:
+    try:
+        login(token=hf_token)
+        print("✅ Logged in to Hugging Face")
+    except Exception as e:
+        print(f"⚠️ HF login failed: {e}")
+else:
+    print("💡 No HF_TOKEN found. Set HF_TOKEN environment variable or run 'huggingface-cli login' if Turbo model fails to load.")
 
 # Initialize output directory
 output_dir = Path("outputs")
