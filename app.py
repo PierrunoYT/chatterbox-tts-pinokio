@@ -170,7 +170,26 @@ def get_audio_info(audio_file):
         return f"❌ Error reading audio: {str(e)}"
 
 # Create the Gradio interface
-with gr.Blocks(title="Chatterbox TTS") as app:
+with gr.Blocks(
+    title="Chatterbox TTS",
+    theme=gr.themes.Soft(),
+    css="""
+    .gradio-container {
+        max-width: 1200px !important;
+    }
+    .main-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .feature-box {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: #f9f9f9;
+    }
+    """
+) as app:
     
     with gr.Row():
         gr.Markdown(
@@ -454,22 +473,5 @@ if __name__ == "__main__":
         server_port=7860,
         share=False,
         show_error=True,
-        quiet=False,
-        theme=gr.themes.Soft(),
-        css="""
-        .gradio-container {
-            max-width: 1200px !important;
-        }
-        .main-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .feature-box {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-            background: #f9f9f9;
-        }
-        """
+        quiet=False
     ) 
