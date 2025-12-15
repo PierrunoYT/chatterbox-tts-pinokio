@@ -6,9 +6,7 @@ module.exports = {
       method: "shell.run",
       params: {
         venv: "env",                // Edit this to customize the venv folder path
-        env: { 
-          HF_TOKEN: "REMOVED_HF_TOKEN"
-        },                   // Edit this to customize environment variables (see documentation)
+        env: { },                   // Edit this to customize environment variables (see documentation)
         message: [
           "python app.py",    // Edit with your custom commands
         ],
