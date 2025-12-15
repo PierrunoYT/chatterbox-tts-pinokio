@@ -23,7 +23,7 @@ print("Loading Chatterbox TTS models...")
 models = {}
 try:
     print("Loading Chatterbox-Turbo...")
-    models['turbo'] = ChatterboxTurboTTS.from_pretrained("PierrunoYT/chatterbox-turbo", device=device)
+    models['turbo'] = ChatterboxTurboTTS.from_pretrained("PierrunoYT/chatterbox-turbo").to(device)
     print("✅ Turbo model loaded!")
 except Exception as e:
     print(f"⚠️ Turbo model failed: {e}")
