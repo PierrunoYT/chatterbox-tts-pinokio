@@ -3,6 +3,7 @@ accelerate
 diffusers
 gradio
 devicetorch
+numpy
 chatterbox-tts>=0.1.2
 scipy
 librosa
