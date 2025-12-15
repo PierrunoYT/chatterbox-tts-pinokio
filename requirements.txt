@@ -3,7 +3,7 @@ accelerate
 diffusers
 gradio
 devicetorch
-chatterbox-tts
+chatterbox-tts==0.1.2
 scipy
 librosa
 accelerate
