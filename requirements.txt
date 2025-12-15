@@ -1,7 +1,6 @@
 transformers
 accelerate
 diffusers
-gradio==5.50
 safehttpx
 devicetorch
 numpy
@@ -9,3 +8,4 @@ git+https://github.com/resemble-ai/chatterbox.git
 scipy
 librosa
 peft
+gradio==5.44.1
