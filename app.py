@@ -70,7 +70,10 @@ def load_turbo_model(hf_token_input):
         print("✅ Logged in to Hugging Face")
         
         print("Loading Chatterbox-Turbo...")
-        models['turbo'] = ChatterboxTurboTTS.from_pretrained("PierrunoYT/chatterbox-turbo").to(device)
+        turbo_model = ChatterboxTurboTTS.from_pretrained("PierrunoYT/chatterbox-turbo")
+        # Move model to device manually
+        turbo_model.model = turbo_model.model.to(device)
+        models['turbo'] = turbo_model
         print("✅ Turbo model loaded!")
         return "✅ Turbo model loaded successfully! You can now use it for generation."
     except Exception as e:
