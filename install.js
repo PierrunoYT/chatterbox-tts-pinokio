@@ -31,9 +31,9 @@ module.exports = {
       params: {
         venv: "env",
         message: [
-          "huggingface-cli download resemble-ai/chatterbox --local-dir models/chatterbox",
-          "huggingface-cli download resemble-ai/chatterbox-multilingual --local-dir models/chatterbox-multilingual",
-          "huggingface-cli download resemble-ai/chatterbox-turbo --local-dir models/chatterbox-turbo"
+          "hf download resemble-ai/chatterbox --local-dir models/chatterbox",
+          "hf download resemble-ai/chatterbox-multilingual --local-dir models/chatterbox-multilingual",
+          "hf download resemble-ai/chatterbox-turbo --local-dir models/chatterbox-turbo"
         ]
       }
     }
