@@ -25,5 +25,17 @@ module.exports = {
         }
       }
     },
+    // Download Chatterbox models from Hugging Face
+    {
+      method: "shell.run",
+      params: {
+        venv: "env",
+        message: [
+          "huggingface-cli download resemble-ai/chatterbox --local-dir models/chatterbox",
+          "huggingface-cli download resemble-ai/chatterbox-multilingual --local-dir models/chatterbox-multilingual",
+          "huggingface-cli download resemble-ai/chatterbox-turbo --local-dir models/chatterbox-turbo"
+        ]
+      }
+    }
   ]
 }
