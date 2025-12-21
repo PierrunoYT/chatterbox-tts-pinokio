@@ -34,7 +34,7 @@ models['turbo'] = None  # Will be loaded on-demand with user token
 
 try:
     print("Loading Chatterbox-Multilingual...")
-    models['multilingual'] = ChatterboxMultilingualTTS.from_local("models/chatterbox-multilingual", device)
+    models['multilingual'] = ChatterboxMultilingualTTS.from_pretrained(device)
     print("✅ Multilingual model loaded!")
 except Exception as e:
     print(f"⚠️ Multilingual model failed: {e}")
@@ -42,7 +42,7 @@ except Exception as e:
 
 try:
     print("Loading Chatterbox (Original)...")
-    models['original'] = ChatterboxTTS.from_local("models/chatterbox", device)
+    models['original'] = ChatterboxTTS.from_pretrained(device)
     print("✅ Original model loaded!")
 except Exception as e:
     print(f"⚠️ Original model failed: {e}")
@@ -74,7 +74,7 @@ def load_turbo_model(hf_token_input):
         
         print("Loading Chatterbox-Turbo...")
         from chatterbox.tts_turbo import ChatterboxTurboTTS
-        models['turbo'] = ChatterboxTurboTTS.from_local("models/chatterbox-turbo", device)
+        models['turbo'] = ChatterboxTurboTTS.from_pretrained(device)
         print("✅ Turbo model loaded!")
         return "✅ Turbo model loaded successfully! You can now use it for generation."
     except Exception as e:
