@@ -8,7 +8,6 @@ import os
 import tempfile
 import time
 from pathlib import Path
-from huggingface_hub import login
 
 # Initialize output directory
 output_dir = Path("outputs")
@@ -18,19 +17,18 @@ output_dir.mkdir(exist_ok=True)
 device = devicetorch.get(torch)
 print(f"Using device: {device}")
 
-# Login to Hugging Face if token is available from environment
-hf_token = os.environ.get('HF_TOKEN')
-if hf_token:
-    try:
-        login(token=hf_token)
-        print("✅ Logged in to Hugging Face from environment variable")
-    except Exception as e:
-        print(f"⚠️ HF login failed: {e}")
-
-# Load non-gated models at startup
+# Load all models at startup (no token needed - using public repos)
 print("Loading Chatterbox TTS models...")
 models = {}
-models['turbo'] = None  # Will be loaded on-demand with user token
+
+try:
+    print("Loading Chatterbox-Turbo...")
+    from chatterbox.tts_turbo import ChatterboxTurboTTS
+    models['turbo'] = ChatterboxTurboTTS.from_pretrained(device)
+    print("✅ Turbo model loaded!")
+except Exception as e:
+    print(f"⚠️ Turbo model failed: {e}")
+    models['turbo'] = None
 
 try:
     print("Loading Chatterbox-Multilingual...")
@@ -53,35 +51,6 @@ if not any(models.values()):
 else:
     print("✅ Models ready!")
 
-def load_turbo_model(hf_token_input):
-    """Load Turbo model with user-provided HF token"""
-    global models
-    
-    if models['turbo'] is not None:
-        return "✅ Turbo model already loaded!"
-    
-    if not hf_token_input or not hf_token_input.strip():
-        return "❌ Please enter your Hugging Face token first"
-    
-    try:
-        # Set the HF token in environment for the download
-        import os
-        os.environ['HF_TOKEN'] = hf_token_input.strip()
-        
-        print(f"Attempting to login with provided token...")
-        login(token=hf_token_input.strip())
-        print("✅ Logged in to Hugging Face")
-        
-        print("Loading Chatterbox-Turbo...")
-        from chatterbox.tts_turbo import ChatterboxTurboTTS
-        models['turbo'] = ChatterboxTurboTTS.from_pretrained(device)
-        print("✅ Turbo model loaded!")
-        return "✅ Turbo model loaded successfully! You can now use it for generation."
-    except Exception as e:
-        error_msg = f"❌ Failed to load Turbo model: {str(e)}\n\nMake sure you have the latest chatterbox-tts package installed."
-        print(error_msg)
-        return error_msg
-
 def generate_speech(model_choice, text, reference_audio, exaggeration, cfg_value, language_code, output_filename):
     """Generate speech using Chatterbox TTS"""
     if not any(models.values()):
@@ -98,8 +67,6 @@ def generate_speech(model_choice, text, reference_audio, exaggeration, cfg_value
     model = models.get(model_key)
     
     if model is None:
-        if model_key == 'turbo':
-            return None, f"❌ Turbo model not loaded. Please enter your HF token and click 'Load Turbo Model' first."
         return None, f"❌ {model_choice} not loaded. Try another model."
     
     if not text or not text.strip():
@@ -200,27 +167,6 @@ with gr.Blocks(
     with gr.Tabs():
         # Main TTS Tab
         with gr.TabItem("🎤 Text-to-Speech"):
-            # HF Token section at the top
-            with gr.Row():
-                with gr.Column():
-                    gr.Markdown("### 🔑 Hugging Face Token (Required for Turbo Model)")
-                    with gr.Row():
-                        hf_token_input = gr.Textbox(
-                            label="HF Token",
-                            placeholder="Enter your Hugging Face token (get it from https://huggingface.co/settings/tokens)",
-                            type="password",
-                            scale=3
-                        )
-                        load_turbo_btn = gr.Button("🚀 Load Turbo Model", scale=1, variant="secondary")
-                    turbo_status = gr.Textbox(
-                        label="Turbo Model Status",
-                        value="⚠️ Turbo model not loaded. Enter your HF token above and click 'Load Turbo Model' to use it.",
-                        interactive=False,
-                        max_lines=2
-                    )
-            
-            gr.Markdown("---")
-            
             with gr.Row():
                 with gr.Column(scale=1):
                     gr.Markdown("### ⚡ Model Selection")
@@ -440,12 +386,6 @@ with gr.Blocks(
             """)
     
     # Event handlers
-    load_turbo_btn.click(
-        fn=load_turbo_model,
-        inputs=[hf_token_input],
-        outputs=[turbo_status]
-    )
-    
     reference_audio.change(
         fn=get_audio_info,
         inputs=[reference_audio],
