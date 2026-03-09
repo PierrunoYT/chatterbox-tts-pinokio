@@ -104,10 +104,20 @@ def generate_speech(model_choice, text, reference_audio, exaggeration, cfg_value
         if not output_filename.endswith('.wav'):
             output_filename += '.wav'
         
-        # Save to outputs directory
+        # Ensure wav is 2D (channels, samples) as required by torchaudio.save
+        if wav.dim() == 1:
+            wav = wav.unsqueeze(0)
+
+        # Save to outputs directory, avoid overwriting existing files
         output_path = output_dir / output_filename
+        if output_path.exists():
+            stem = output_path.stem
+            suffix = output_path.suffix
+            output_path = output_dir / f"{stem}_{int(time.time())}{suffix}"
+            output_filename = output_path.name
+
         ta.save(str(output_path), wav, model.sr)
-        
+
         print(f"✅ Speech generated successfully: {output_path}")
         return str(output_path), f"✅ Speech generated successfully with {model_choice}!\nSaved as: {output_filename}"
         
@@ -264,8 +274,8 @@ with gr.Blocks(
                 with gr.Column(scale=1):
                     gr.Markdown("### 🎯 Voice Cloning (Optional)")
                     reference_audio = gr.Audio(
-                    label="Reference Audio for Voice Cloning (Upload 10+ seconds of clear speech)",
-                    type="filepath"
+                        label="Reference Audio for Voice Cloning (Upload 10+ seconds of clear speech)",
+                        type="filepath"
                     )
                     
                     audio_info = gr.Textbox(
