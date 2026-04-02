@@ -152,7 +152,7 @@ def get_audio_info(audio_file):
 # ── Custom CSS ──────────────────────────────────────────────────────────────────
 css = """
 /* layout */
-.gradio-container { max-width: 1100px !important; }
+.gradio-container { max-width: 1100px !important; margin: 0 auto !important; }
 
 /* header */
 .app-header { text-align: center; padding: 1.2rem 0 0.4rem; }
