@@ -7,7 +7,7 @@ module.exports = {
         venv: "env",
         message: [
           "uv pip install numpy wheel",
-          "uv pip uninstall chatterbox-tts gradio resemble-perth"
+          "uv pip uninstall -y chatterbox-tts gradio resemble-perth"
         ],
       }
     },
@@ -29,19 +29,6 @@ module.exports = {
         params: {
           venv: "env",
         }
-      }
-    },
-    // Step 4: Download Chatterbox models from Hugging Face
-    {
-      method: "shell.run",
-      params: {
-        venv: "env",
-        message: [
-          "uv pip install huggingface-hub[cli]",
-          "huggingface-cli download resemble-ai/chatterbox",
-          "huggingface-cli download resemble-ai/chatterbox-multilingual",
-          "huggingface-cli download ResembleAI/chatterbox-turbo"
-        ]
       }
     }
   ]
