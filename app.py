@@ -298,41 +298,39 @@ with gr.Blocks(title="Chatterbox TTS", theme=gr.themes.Soft(), css=css) as app:
                     )
 
                 with gr.Column(scale=5):
-                    with gr.Accordion("Voice parameters", open=False):
-                        with gr.Row():
-                            exaggeration = gr.Slider(
-                                0,
-                                2,
-                                0.5,
-                                step=0.05,
-                                label="Exaggeration",
-                                info="Expressiveness (Original / Multilingual)",
-                            )
-                            cfg_value = gr.Slider(
-                                0,
-                                1,
-                                0.5,
-                                step=0.05,
-                                label="CFG",
-                                info="Pacing control (Original / Multilingual)",
-                            )
-                        with gr.Row():
-                            temperature = gr.Slider(
-                                0.05, 5, 0.8, step=0.05, label="Temperature"
-                            )
-                            repetition_penalty = gr.Slider(
-                                1, 2, 1.2, step=0.05, label="Rep. Penalty"
-                            )
-                        with gr.Row():
-                            min_p = gr.Slider(0, 1, 0.05, step=0.01, label="Min-P")
-                            top_p = gr.Slider(0, 1, 0.95, step=0.05, label="Top-P")
-                        with gr.Row():
-                            top_k = gr.Slider(
-                                0, 1000, 1000, step=10, label="Top-K (Turbo)"
-                            )
-                            norm_loudness = gr.Checkbox(
-                                True, label="Normalize loudness (Turbo)"
-                            )
+                    gr.Markdown("### Voice parameters")
+                    with gr.Row():
+                        exaggeration = gr.Slider(
+                            0,
+                            2,
+                            0.5,
+                            step=0.05,
+                            label="Exaggeration",
+                            info="Expressiveness (Original / Multilingual)",
+                        )
+                        cfg_value = gr.Slider(
+                            0,
+                            1,
+                            0.5,
+                            step=0.05,
+                            label="CFG",
+                            info="Pacing control (Original / Multilingual)",
+                        )
+                    with gr.Row():
+                        temperature = gr.Slider(
+                            0.05, 5, 0.8, step=0.05, label="Temperature"
+                        )
+                        repetition_penalty = gr.Slider(
+                            1, 2, 1.2, step=0.05, label="Rep. Penalty"
+                        )
+                    with gr.Row():
+                        min_p = gr.Slider(0, 1, 0.05, step=0.01, label="Min-P")
+                        top_p = gr.Slider(0, 1, 0.95, step=0.05, label="Top-P")
+                    with gr.Row():
+                        top_k = gr.Slider(0, 1000, 1000, step=10, label="Top-K (Turbo)")
+                        norm_loudness = gr.Checkbox(
+                            True, label="Normalize loudness (Turbo)"
+                        )
 
         # ── Guide Tab ───────────────────────────────────────────────────────
         with gr.TabItem("Guide"):
