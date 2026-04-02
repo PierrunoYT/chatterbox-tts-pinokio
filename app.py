@@ -15,10 +15,13 @@ print(f"Using device: {device}")
 if str(device) == "cpu":
     print("⚠️ Running on CPU — generation will be slow.")
 elif "cuda" in str(device):
-    print(f"✅ GPU: {torch.cuda.get_device_name(0)} ({torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB VRAM)")
+    print(
+        f"✅ GPU: {torch.cuda.get_device_name(0)} ({torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB VRAM)"
+    )
 
 # Lazy model cache
 _models = {}
+
 
 def _get_model(key):
     """Load a model on first use and cache it."""
@@ -27,14 +30,17 @@ def _get_model(key):
 
     if key == "turbo":
         from chatterbox.tts_turbo import ChatterboxTurboTTS
+
         print("⏳ Downloading & loading Chatterbox-Turbo …")
         _models[key] = ChatterboxTurboTTS.from_pretrained(device)
     elif key == "multilingual":
         from chatterbox.mtl_tts import ChatterboxMultilingualTTS
+
         print("⏳ Downloading & loading Chatterbox-Multilingual …")
         _models[key] = ChatterboxMultilingualTTS.from_pretrained(device)
     elif key == "original":
         from chatterbox.tts import ChatterboxTTS
+
         print("⏳ Downloading & loading Chatterbox-Original …")
         _models[key] = ChatterboxTTS.from_pretrained(device)
     else:
@@ -52,10 +58,19 @@ MODEL_CHOICES = {
 
 
 def generate_speech(
-    model_choice, text, reference_audio,
-    exaggeration, cfg_value, temperature,
-    min_p, top_p, repetition_penalty,
-    top_k, norm_loudness, language_code, output_filename,
+    model_choice,
+    text,
+    reference_audio,
+    exaggeration,
+    cfg_value,
+    temperature,
+    min_p,
+    top_p,
+    repetition_penalty,
+    top_k,
+    norm_loudness,
+    language_code,
+    output_filename,
 ):
     if not text or not text.strip():
         return None, "❌ Please enter some text."
@@ -75,18 +90,31 @@ def generate_speech(
             params["audio_prompt_path"] = reference_audio
 
         if model_key == "turbo":
-            params.update(temperature=temperature, min_p=min_p, top_p=top_p,
-                          top_k=int(top_k), repetition_penalty=repetition_penalty,
-                          norm_loudness=norm_loudness)
+            params.update(
+                temperature=temperature,
+                min_p=min_p,
+                top_p=top_p,
+                top_k=int(top_k),
+                repetition_penalty=repetition_penalty,
+                norm_loudness=norm_loudness,
+            )
         elif model_key == "multilingual":
-            params.update(exaggeration=exaggeration, cfg_weight=max(cfg_value, 0.2),
-                          temperature=temperature)
+            params.update(
+                exaggeration=exaggeration,
+                cfg_weight=max(cfg_value, 0.2),
+                temperature=temperature,
+            )
             if language_code and language_code != "auto":
                 params["language_id"] = language_code
         else:
-            params.update(exaggeration=exaggeration, cfg_weight=cfg_value,
-                          temperature=temperature, min_p=min_p, top_p=top_p,
-                          repetition_penalty=repetition_penalty)
+            params.update(
+                exaggeration=exaggeration,
+                cfg_weight=cfg_value,
+                temperature=temperature,
+                min_p=min_p,
+                top_p=top_p,
+                repetition_penalty=repetition_penalty,
+            )
 
         gen_text = text[:300] if model_key == "multilingual" else text
         wav = model.generate(gen_text, **params)
@@ -161,19 +189,34 @@ css = """
 """
 
 LANGUAGES = [
-    ("Auto-detect", "auto"), ("Arabic", "ar"), ("Chinese", "zh"),
-    ("Danish", "da"), ("Dutch", "nl"), ("English", "en"),
-    ("Finnish", "fi"), ("French", "fr"), ("German", "de"),
-    ("Greek", "el"), ("Hebrew", "he"), ("Hindi", "hi"),
-    ("Italian", "it"), ("Japanese", "ja"), ("Korean", "ko"),
-    ("Malay", "ms"), ("Norwegian", "no"), ("Polish", "pl"),
-    ("Portuguese", "pt"), ("Russian", "ru"), ("Spanish", "es"),
-    ("Swedish", "sv"), ("Swahili", "sw"), ("Turkish", "tr"),
+    ("Auto-detect", "auto"),
+    ("Arabic", "ar"),
+    ("Chinese", "zh"),
+    ("Danish", "da"),
+    ("Dutch", "nl"),
+    ("English", "en"),
+    ("Finnish", "fi"),
+    ("French", "fr"),
+    ("German", "de"),
+    ("Greek", "el"),
+    ("Hebrew", "he"),
+    ("Hindi", "hi"),
+    ("Italian", "it"),
+    ("Japanese", "ja"),
+    ("Korean", "ko"),
+    ("Malay", "ms"),
+    ("Norwegian", "no"),
+    ("Polish", "pl"),
+    ("Portuguese", "pt"),
+    ("Russian", "ru"),
+    ("Spanish", "es"),
+    ("Swedish", "sv"),
+    ("Swahili", "sw"),
+    ("Turkish", "tr"),
 ]
 
 # ── UI ──────────────────────────────────────────────────────────────────────────
 with gr.Blocks(title="Chatterbox TTS", theme=gr.themes.Soft(), css=css) as app:
-
     # Header
     gr.HTML("""
     <div class="app-header">
@@ -185,66 +228,99 @@ with gr.Blocks(title="Chatterbox TTS", theme=gr.themes.Soft(), css=css) as app:
     with gr.Tabs():
         # ── Generate Tab ────────────────────────────────────────────────────
         with gr.TabItem("Generate", id="gen"):
+            # ── Row 1: Text inputs (left) + Output (right) ──────────────────
             with gr.Row(equal_height=False):
-                # Left column — inputs
-                with gr.Column(scale=1):
+                # Left — model, text, generate
+                with gr.Column(scale=5):
                     model_selector = gr.Dropdown(
                         choices=list(MODEL_CHOICES.keys()),
                         value=list(MODEL_CHOICES.keys())[0],
                         label="Model",
                     )
-
-                    text_input = gr.Textbox(
-                        label="Text",
-                        placeholder="Type something… Turbo supports [laugh], [chuckle], [cough], [sigh]",
-                        lines=4,
-                    )
-
                     language_selector = gr.Dropdown(
-                        choices=LANGUAGES, value="auto",
+                        choices=LANGUAGES,
+                        value="auto",
                         label="Language (Multilingual only)",
                         visible=False,
                     )
+                    text_input = gr.Textbox(
+                        label="Text",
+                        placeholder="Type something… Turbo supports [laugh], [chuckle], [cough], [sigh]",
+                        lines=6,
+                    )
+                    output_filename = gr.Textbox(
+                        label="Output filename (optional)", placeholder="my_speech.wav"
+                    )
+                    generate_btn = gr.Button(
+                        "🎵 Generate",
+                        variant="primary",
+                        size="lg",
+                        elem_classes=["generate-btn"],
+                    )
 
-                    # Voice reference
-                    gr.Markdown("Voice clone (optional)", elem_classes=["section-title"])
-                    reference_audio = gr.Audio(label="Reference audio (10 s+)", type="filepath")
-                    audio_info = gr.Textbox(label="Info", interactive=False, max_lines=1)
-
-                    # Parameters in accordions
-                    with gr.Accordion("Voice parameters", open=False):
-                        with gr.Row():
-                            exaggeration = gr.Slider(0, 2, 0.5, step=0.05, label="Exaggeration",
-                                                     info="Expressiveness (Original / Multilingual)")
-                            cfg_value = gr.Slider(0, 1, 0.5, step=0.05, label="CFG",
-                                                  info="Pacing control (Original / Multilingual)")
-                        with gr.Row():
-                            temperature = gr.Slider(0.05, 5, 0.8, step=0.05, label="Temperature")
-                            repetition_penalty = gr.Slider(1, 2, 1.2, step=0.05, label="Rep. Penalty")
-                        with gr.Row():
-                            min_p = gr.Slider(0, 1, 0.05, step=0.01, label="Min-P")
-                            top_p = gr.Slider(0, 1, 0.95, step=0.05, label="Top-P")
-                        with gr.Row():
-                            top_k = gr.Slider(0, 1000, 1000, step=10, label="Top-K (Turbo)")
-                            norm_loudness = gr.Checkbox(True, label="Normalize loudness (Turbo)")
-
-                    output_filename = gr.Textbox(label="Filename (optional)", placeholder="my_speech.wav")
-
-                    generate_btn = gr.Button("🎵 Generate", variant="primary", size="lg",
-                                             elem_classes=["generate-btn"])
-
-                # Right column — output
-                with gr.Column(scale=1):
+                # Right — output audio + status + tips
+                with gr.Column(scale=5):
                     output_audio = gr.Audio(label="Output", type="filepath")
-                    status_output = gr.Textbox(label="Status", interactive=False,
-                                               max_lines=2, elem_classes=["status-box"])
-
+                    status_output = gr.Textbox(
+                        label="Status",
+                        interactive=False,
+                        max_lines=2,
+                        elem_classes=["status-box"],
+                    )
                     gr.Markdown("""
                     **Quick tips**
                     - First generation is slower (model download + load)
                     - Turbo tags: `[laugh]` `[chuckle]` `[cough]` `[sigh]`
                     - Voice clone works best with 10 s+ clean speech
                     """)
+
+            # ── Row 2: Voice clone (left) + Parameters (right) ──────────────
+            with gr.Row(equal_height=False):
+                with gr.Column(scale=5):
+                    gr.Markdown("### Voice clone (optional)")
+                    reference_audio = gr.Audio(
+                        label="Reference audio (10 s+)", type="filepath"
+                    )
+                    audio_info = gr.Textbox(
+                        label="Info", interactive=False, max_lines=1
+                    )
+
+                with gr.Column(scale=5):
+                    with gr.Accordion("Voice parameters", open=False):
+                        with gr.Row():
+                            exaggeration = gr.Slider(
+                                0,
+                                2,
+                                0.5,
+                                step=0.05,
+                                label="Exaggeration",
+                                info="Expressiveness (Original / Multilingual)",
+                            )
+                            cfg_value = gr.Slider(
+                                0,
+                                1,
+                                0.5,
+                                step=0.05,
+                                label="CFG",
+                                info="Pacing control (Original / Multilingual)",
+                            )
+                        with gr.Row():
+                            temperature = gr.Slider(
+                                0.05, 5, 0.8, step=0.05, label="Temperature"
+                            )
+                            repetition_penalty = gr.Slider(
+                                1, 2, 1.2, step=0.05, label="Rep. Penalty"
+                            )
+                        with gr.Row():
+                            min_p = gr.Slider(0, 1, 0.05, step=0.01, label="Min-P")
+                            top_p = gr.Slider(0, 1, 0.95, step=0.05, label="Top-P")
+                        with gr.Row():
+                            top_k = gr.Slider(
+                                0, 1000, 1000, step=10, label="Top-K (Turbo)"
+                            )
+                            norm_loudness = gr.Checkbox(
+                                True, label="Normalize loudness (Turbo)"
+                            )
 
         # ── Guide Tab ───────────────────────────────────────────────────────
         with gr.TabItem("Guide"):
@@ -301,10 +377,21 @@ with gr.Blocks(title="Chatterbox TTS", theme=gr.themes.Soft(), css=css) as app:
 
     generate_btn.click(
         generate_speech,
-        inputs=[model_selector, text_input, reference_audio,
-                exaggeration, cfg_value, temperature,
-                min_p, top_p, repetition_penalty,
-                top_k, norm_loudness, language_selector, output_filename],
+        inputs=[
+            model_selector,
+            text_input,
+            reference_audio,
+            exaggeration,
+            cfg_value,
+            temperature,
+            min_p,
+            top_p,
+            repetition_penalty,
+            top_k,
+            norm_loudness,
+            language_selector,
+            output_filename,
+        ],
         outputs=[output_audio, status_output],
     )
 
