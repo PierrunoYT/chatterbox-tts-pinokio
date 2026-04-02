@@ -13,3 +13,4 @@ peft>=0.10.0
 safetensors==0.5.3
 conformer==0.3.2
 gradio==6.8.0
+huggingface-hub>=0.20.0
