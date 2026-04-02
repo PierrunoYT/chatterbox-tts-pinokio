@@ -7,7 +7,7 @@ module.exports = {
         venv: "env",
         message: [
           "uv pip install numpy wheel",
-          "uv pip uninstall -y chatterbox-tts gradio resemble-perth"
+          "uv pip uninstall chatterbox-tts gradio resemble-perth"
         ],
       }
     },
