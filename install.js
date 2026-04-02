@@ -1,27 +1,17 @@
 module.exports = {
   run: [
-    // Step 1: Create venv and install numpy first
+    // Step 1: Install dependencies
     {
       method: "shell.run",
       params: {
         venv: "env",
         message: [
           "uv pip install numpy wheel",
-          "uv pip uninstall chatterbox-tts gradio resemble-perth"
-        ],
-      }
-    },
-    // Step 2: Install remaining dependencies
-    {
-      method: "shell.run",
-      params: {
-        venv: "env",
-        message: [
           "uv pip install -r requirements.txt --no-build-isolation"
         ],
       }
     },
-    // Step 3: Reinstall torch with GPU support in case requirements overrode it
+    // Step 2: Reinstall torch with GPU support in case requirements overrode it
     {
       method: "script.start",
       params: {
