@@ -73,16 +73,28 @@ def generate_speech(
     output_filename,
 ):
     if not text or not text.strip():
-        return None, "❌ Please enter some text."
+        yield None, "❌ Please enter some text."
+        return
 
     model_key = MODEL_CHOICES.get(model_choice)
     if not model_key:
-        return None, "❌ Invalid model selection."
+        yield None, "❌ Invalid model selection."
+        return
+
+    # Show loading status if model isn't cached yet
+    if model_key not in _models:
+        yield (
+            None,
+            f"⏳ Downloading & loading {model_choice} model… (first use only, may take a minute)",
+        )
 
     try:
         model = _get_model(model_key)
     except Exception as e:
-        return None, f"❌ Failed to load model: {e}"
+        yield None, f"❌ Failed to load model: {e}"
+        return
+
+    yield None, "🎙️ Generating speech…"
 
     try:
         params = {}
@@ -132,10 +144,10 @@ def generate_speech(
             output_path = output_dir / f"{output_path.stem}_{int(time.time())}.wav"
 
         ta.save(str(output_path), wav, model.sr)
-        return str(output_path), f"✅ Saved as **{output_path.name}**"
+        yield str(output_path), f"✅ Saved as **{output_path.name}**"
 
     except Exception as e:
-        return None, f"❌ Generation error: {e}"
+        yield None, f"❌ Generation error: {e}"
 
 
 def get_audio_info(audio_file):
