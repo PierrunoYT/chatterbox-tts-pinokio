@@ -56,7 +56,6 @@ def generate_speech(
     exaggeration, cfg_value, temperature,
     min_p, top_p, repetition_penalty,
     top_k, norm_loudness, language_code, output_filename,
-    progress=gr.Progress(track_tqdm=True),
 ):
     if not text or not text.strip():
         return None, "❌ Please enter some text."
