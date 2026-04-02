@@ -158,3 +158,6 @@ Thumbs.db
 # Gradio
 gradio_cached_examples/
 flagged/
+
+# Pinokio
+logs/

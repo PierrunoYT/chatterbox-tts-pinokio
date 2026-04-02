@@ -16,6 +16,11 @@ output_dir.mkdir(exist_ok=True)
 # Get the appropriate device
 device = devicetorch.get(torch)
 print(f"Using device: {device}")
+if str(device) == "cpu":
+    print("⚠️ Running on CPU — generation will be slow. For GPU support, reinstall with CUDA-enabled PyTorch.")
+elif "cuda" in str(device):
+    print(f"✅ GPU detected: {torch.cuda.get_device_name(0)}")
+    print(f"   VRAM: {torch.cuda.get_device_properties(0).total_mem / 1024**3:.1f} GB")
 
 # Load all models at startup (no token needed - using public repos)
 print("Loading Chatterbox TTS models...")
@@ -51,7 +56,7 @@ if not any(models.values()):
 else:
     print("✅ Models ready!")
 
-def generate_speech(model_choice, text, reference_audio, exaggeration, cfg_value, language_code, output_filename):
+def generate_speech(model_choice, text, reference_audio, exaggeration, cfg_value, temperature, min_p, top_p, repetition_penalty, top_k, norm_loudness, language_code, output_filename):
     """Generate speech using Chatterbox TTS"""
     if not any(models.values()):
         return None, "❌ No models loaded. Please check the installation."
@@ -78,23 +83,38 @@ def generate_speech(model_choice, text, reference_audio, exaggeration, cfg_value
         # Prepare parameters
         params = {}
         
-        # Turbo model doesn't use exaggeration/cfg_weight
-        if model_key != 'turbo':
-            params["exaggeration"] = exaggeration
-            params["cfg_weight"] = cfg_value
-        
         # Add reference audio if provided
         if reference_audio is not None:
             params["audio_prompt_path"] = reference_audio
             print(f"Using voice cloning with reference audio: {reference_audio}")
         
-        # Add language for multilingual model
-        if model_key == 'multilingual' and language_code and language_code != "auto":
-            params["language_id"] = language_code
-            print(f"Using language: {language_code}")
+        if model_key == 'turbo':
+            # Turbo-specific parameters (no exaggeration/cfg_weight)
+            params["temperature"] = temperature
+            params["min_p"] = min_p
+            params["top_p"] = top_p
+            params["top_k"] = int(top_k)
+            params["repetition_penalty"] = repetition_penalty
+            params["norm_loudness"] = norm_loudness
+        elif model_key == 'multilingual':
+            params["exaggeration"] = exaggeration
+            params["cfg_weight"] = max(cfg_value, 0.2)  # Multilingual minimum is 0.2
+            params["temperature"] = temperature
+            if language_code and language_code != "auto":
+                params["language_id"] = language_code
+                print(f"Using language: {language_code}")
+        else:
+            # Original model
+            params["exaggeration"] = exaggeration
+            params["cfg_weight"] = cfg_value
+            params["temperature"] = temperature
+            params["min_p"] = min_p
+            params["top_p"] = top_p
+            params["repetition_penalty"] = repetition_penalty
         
-        # Generate speech
-        wav = model.generate(text, **params)
+        # Generate speech (multilingual has 300 char limit)
+        gen_text = text[:300] if model_key == 'multilingual' else text
+        wav = model.generate(gen_text, **params)
         
         # Create output filename
         if not output_filename:
@@ -240,23 +260,71 @@ with gr.Blocks(
                     )
                     
                     gr.Markdown("### 🎨 Voice Settings")
-                    gr.Markdown("💡 *Note: Exaggeration and CFG controls don't apply to Turbo model*")
+                    gr.Markdown("💡 *Exaggeration & CFG: Original/Multilingual only. Top-K & Loudness Norm: Turbo only.*")
                     with gr.Row():
                         exaggeration = gr.Slider(
                             minimum=0.0,
-                            maximum=1.0,
+                            maximum=2.0,
                             value=0.5,
-                            step=0.1,
+                            step=0.05,
                             label="Emotion Exaggeration",
-                            info="Higher values make speech more expressive"
+                            info="Higher values make speech more expressive (Original/Multilingual)"
                         )
                         cfg_value = gr.Slider(
                             minimum=0.0,
                             maximum=1.0,
                             value=0.5,
-                            step=0.1,
+                            step=0.05,
                             label="CFG Scale",
-                            info="Lower values = slower, more deliberate speech"
+                            info="Lower values = slower, more deliberate speech (Original/Multilingual, min 0.2 for Multilingual)"
+                        )
+                    with gr.Row():
+                        temperature = gr.Slider(
+                            minimum=0.05,
+                            maximum=5.0,
+                            value=0.8,
+                            step=0.05,
+                            label="Temperature",
+                            info="Controls randomness of generation"
+                        )
+                        repetition_penalty = gr.Slider(
+                            minimum=1.0,
+                            maximum=2.0,
+                            value=1.2,
+                            step=0.05,
+                            label="Repetition Penalty",
+                            info="Penalizes repeated tokens"
+                        )
+                    with gr.Row():
+                        min_p = gr.Slider(
+                            minimum=0.0,
+                            maximum=1.0,
+                            value=0.05,
+                            step=0.01,
+                            label="Min-P",
+                            info="Minimum probability threshold"
+                        )
+                        top_p = gr.Slider(
+                            minimum=0.0,
+                            maximum=1.0,
+                            value=0.95,
+                            step=0.05,
+                            label="Top-P",
+                            info="Nucleus sampling threshold"
+                        )
+                    with gr.Row():
+                        top_k = gr.Slider(
+                            minimum=0,
+                            maximum=1000,
+                            value=1000,
+                            step=10,
+                            label="Top-K (Turbo only)",
+                            info="Top-K sampling limit"
+                        )
+                        norm_loudness = gr.Checkbox(
+                            value=True,
+                            label="Normalize Loudness (Turbo only)",
+                            info="Normalize output to -27 LUFS"
                         )
                     
                     output_filename = gr.Textbox(
@@ -404,7 +472,7 @@ with gr.Blocks(
     
     generate_btn.click(
         fn=generate_speech,
-        inputs=[model_selector, text_input, reference_audio, exaggeration, cfg_value, language_selector, output_filename],
+        inputs=[model_selector, text_input, reference_audio, exaggeration, cfg_value, temperature, min_p, top_p, repetition_penalty, top_k, norm_loudness, language_selector, output_filename],
         outputs=[output_audio, status_output]
     )
 

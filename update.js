@@ -2,8 +2,12 @@ module.exports = {
   run: [{
     method: "shell.run",
     params: {
-      path: "GLM-TTS",
       message: "git pull"
+    }
+  }, {
+    method: "script.start",
+    params: {
+      uri: "install.js"
     }
   }]
 }

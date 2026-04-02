@@ -1,39 +1,55 @@
 module.exports = {
   run: [
-    // Edit this step with your custom install commands
-    {
-      method: "shell.run",
-      params: {
-        venv: "env",                // Edit this to customize the venv folder path
-        message: [
-          "uv pip install numpy",
-          "uv pip uninstall chatterbox-tts gradio",
-          "uv pip install -r requirements.txt"
-        ],
-      }
-    },
-    // Install torch after other dependencies
-    {
-      method: "script.start",
-      params: {
-        uri: "torch.js",
-        params: {
-          venv: "env",                // Edit this to customize the venv folder path
-          // xformers: true   // uncomment this line if your project requires xformers
-          // triton: true   // uncomment this line if your project requires triton
-          // sageattention: true   // uncomment this line if your project requires sageattention
-        }
-      }
-    },
-    // Download Chatterbox models from Hugging Face
+    // Step 1: Create venv and install numpy first
     {
       method: "shell.run",
       params: {
         venv: "env",
         message: [
-          "hf download resemble-ai/chatterbox --local-dir models/chatterbox",
-          "hf download resemble-ai/chatterbox-multilingual --local-dir models/chatterbox-multilingual",
-          "hf download PierrunoYT/chatterbox-turbo --local-dir models/chatterbox-turbo"
+          "uv pip install numpy",
+          "uv pip uninstall chatterbox-tts gradio resemble-perth"
+        ],
+      }
+    },
+    // Step 2: Install torch with GPU support FIRST (before other deps)
+    {
+      method: "script.start",
+      params: {
+        uri: "torch.js",
+        params: {
+          venv: "env",
+        }
+      }
+    },
+    // Step 3: Install remaining dependencies (torch already installed with GPU support)
+    {
+      method: "shell.run",
+      params: {
+        venv: "env",
+        message: [
+          "uv pip install -r requirements.txt --no-build-isolation"
+        ],
+      }
+    },
+    // Step 4: Reinstall torch with GPU support in case requirements overrode it
+    {
+      method: "script.start",
+      params: {
+        uri: "torch.js",
+        params: {
+          venv: "env",
+        }
+      }
+    },
+    // Step 5: Download Chatterbox models from Hugging Face
+    {
+      method: "shell.run",
+      params: {
+        venv: "env",
+        message: [
+          "huggingface-cli download resemble-ai/chatterbox",
+          "huggingface-cli download resemble-ai/chatterbox-multilingual",
+          "huggingface-cli download ResembleAI/chatterbox-turbo"
         ]
       }
     }
