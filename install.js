@@ -11,17 +11,7 @@ module.exports = {
         ],
       }
     },
-    // Step 2: Install torch with GPU support FIRST (before other deps)
-    {
-      method: "script.start",
-      params: {
-        uri: "torch.js",
-        params: {
-          venv: "env",
-        }
-      }
-    },
-    // Step 3: Install remaining dependencies (torch already installed with GPU support)
+    // Step 2: Install remaining dependencies
     {
       method: "shell.run",
       params: {
@@ -31,7 +21,7 @@ module.exports = {
         ],
       }
     },
-    // Step 4: Reinstall torch with GPU support in case requirements overrode it
+    // Step 3: Reinstall torch with GPU support in case requirements overrode it
     {
       method: "script.start",
       params: {
@@ -41,12 +31,13 @@ module.exports = {
         }
       }
     },
-    // Step 5: Download Chatterbox models from Hugging Face
+    // Step 4: Download Chatterbox models from Hugging Face
     {
       method: "shell.run",
       params: {
         venv: "env",
         message: [
+          "uv pip install huggingface-hub[cli]",
           "huggingface-cli download resemble-ai/chatterbox",
           "huggingface-cli download resemble-ai/chatterbox-multilingual",
           "huggingface-cli download ResembleAI/chatterbox-turbo"
