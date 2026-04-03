@@ -6,12 +6,14 @@ module.exports = {
       method: "shell.run",
       params: {
         venv: "env",                // Edit this to customize the venv folder path
+        path: "app",
         env: { },                   // Edit this to customize environment variables (see documentation)
         message: [
           "python app.py",    // Edit with your custom commands
         ],
         on: [{
-          "event": "/(http:\\/\\/[0-9.:]+)/",
+          // Generic URL capture (see gepeto skill / PINOKIO.md); group 1 → input.event[1] for local.set
+          "event": "/(http:\\/\\/\\S+)/",
           "done": true
         }]
       }

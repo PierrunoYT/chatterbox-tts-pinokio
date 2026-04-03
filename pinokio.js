@@ -1,4 +1,3 @@
-const path = require('path')
 module.exports = {
   version: "3.7",
   title: "ChatterBox",

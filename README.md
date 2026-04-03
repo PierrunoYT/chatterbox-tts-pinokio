@@ -41,6 +41,7 @@ cd chatterbox-tts-app
 
 2. Install dependencies:
 ```bash
+cd app
 pip install -r requirements.txt
 ```
 
@@ -52,6 +53,7 @@ Or set the HF_TOKEN environment variable in `start.js`.
 
 4. Run the application:
 ```bash
+cd app
 python app.py
 ```
 
@@ -99,11 +101,13 @@ Arabic (ar) • Danish (da) • German (de) • Greek (el) • English (en) • 
 
 ```
 chatterbox-tts-app/
-├── app.py              # Main Gradio application
-├── requirements.txt    # Python dependencies
-├── outputs/           # Generated audio files (created automatically)
-├── icon.png           # Application icon
-└── pinokio files/     # Pinokio integration files
+├── app/                 # Application code (Pinokio convention)
+│   ├── app.py           # Main Gradio application
+│   ├── requirements.txt # Python dependencies
+│   ├── pyproject.toml   # UV / build hints
+│   └── outputs/         # Generated audio (created at runtime)
+├── install.js, start.js, …  # Pinokio launcher scripts (repo root)
+└── icon.png             # Application icon (optional)
 ```
 
 ## 🔧 Technical Details
