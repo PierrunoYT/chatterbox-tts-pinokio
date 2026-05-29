@@ -1,5 +1,5 @@
 module.exports = {
-  version: "3.7",
+  version: "5.0",
   title: "ChatterBox",
   description: "",
   icon: "icon.png",

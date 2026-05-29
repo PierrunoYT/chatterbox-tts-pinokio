@@ -1,5 +1,5 @@
 {
   "title": "ChatterBox",
-  "description": "AI-Powered Text-to-Speech with Voice Cloning using Chatterbox TTS and Gradio interface. Includes Turbo, Multilingual (23+ languages), and Original models.",
+  "description": "AI-Powered Text-to-Speech with Voice Cloning using Chatterbox TTS and a Gradio interface. Includes Turbo, Multilingual (23+ languages), and Original models. Runs locally; CUDA GPU recommended, CPU supported. Windows, Mac, and Linux.",
   "icon": "icon.png"
 }

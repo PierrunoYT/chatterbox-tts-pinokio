@@ -35,8 +35,8 @@ Chatterbox is a family of three state-of-the-art, open-source text-to-speech mod
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/PierrunoYT/chatterbox-tts-app.git
-cd chatterbox-tts-app
+git clone https://github.com/PierrunoYT/chatterbox-tts-pinokio.git
+cd chatterbox-tts-pinokio
 ```
 
 2. Install dependencies:
@@ -100,7 +100,7 @@ Arabic (ar) • Danish (da) • German (de) • Greek (el) • English (en) • 
 ## 📁 Project Structure
 
 ```
-chatterbox-tts-app/
+chatterbox-tts-pinokio/
 ├── app/                 # Application code (Pinokio convention)
 │   ├── app.py           # Main Gradio application
 │   ├── requirements.txt # Python dependencies
@@ -146,4 +146,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🐛 Issues
 
-If you encounter any issues, please report them on the [GitHub Issues](https://github.com/PierrunoYT/chatterbox-tts-app/issues) page.
+If you encounter any issues, please report them on the [GitHub Issues](https://github.com/PierrunoYT/chatterbox-tts-pinokio/issues) page.
