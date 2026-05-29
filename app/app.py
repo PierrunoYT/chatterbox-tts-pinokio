@@ -3,6 +3,7 @@ import torchaudio as ta
 import devicetorch
 import torch
 import time
+import os
 from pathlib import Path
 
 # Output directory
@@ -407,4 +408,4 @@ with gr.Blocks(title="Chatterbox TTS", theme=gr.themes.Soft(), css=css) as app:
 
 if __name__ == "__main__":
     print(f"\n🚀 Chatterbox TTS · {device}")
-    app.launch(server_name="127.0.0.1", server_port=7860, show_error=True)
+    app.launch(server_name="127.0.0.1", server_port=int(os.environ.get("GRADIO_SERVER_PORT", "7860")), show_error=True)

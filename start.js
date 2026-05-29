@@ -7,7 +7,9 @@ module.exports = {
       params: {
         venv: "env",                // Edit this to customize the venv folder path
         path: "app",
-        env: { },                   // Edit this to customize environment variables (see documentation)
+        env: {
+          GRADIO_SERVER_PORT: "{{port}}"
+        },                   // Edit this to customize environment variables (see documentation)
         message: [
           "python app.py",    // Edit with your custom commands
         ],

@@ -162,3 +162,6 @@ flagged/
 # Pinokio
 logs/
 installed.flag
+app/env/
+app/outputs/
+app/.gradio/
