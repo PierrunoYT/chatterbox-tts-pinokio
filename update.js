@@ -9,7 +9,10 @@ module.exports = {
     params: {
       venv: "env",
       path: "app",
-      message: "uv pip install -r requirements.txt --no-build-isolation"
+      message: [
+        "uv pip install numpy wheel",
+        "uv pip install -r requirements.txt --no-build-isolation"
+      ]
     }
   }, {
     method: "script.start",
