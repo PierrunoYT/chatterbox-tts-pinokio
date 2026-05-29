@@ -1,0 +1,5 @@
+{
+  "title": "ChatterBox",
+  "description": "AI-Powered Text-to-Speech with Voice Cloning using Chatterbox TTS and Gradio interface. Includes Turbo, Multilingual (23+ languages), and Original models.",
+  "icon": "icon.png"
+}

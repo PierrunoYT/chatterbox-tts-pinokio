@@ -2,7 +2,12 @@ module.exports = {
   run: [{
     method: "fs.rm",
     params: {
-      path: "env"
+      path: "app/env"
+    }
+  }, {
+    method: "fs.rm",
+    params: {
+      path: "installed.flag"
     }
   }]
 }

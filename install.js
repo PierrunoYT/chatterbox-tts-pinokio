@@ -22,6 +22,14 @@ module.exports = {
           path: "app",
         }
       }
+    },
+    // Step 3: Drop install sentinel so pinokio.js only reports "installed" after a fully successful run
+    {
+      method: "fs.write",
+      params: {
+        path: "installed.flag",
+        text: "ok"
+      }
     }
   ]
 }
