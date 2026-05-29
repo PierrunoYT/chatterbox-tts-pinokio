@@ -1,8 +1,5 @@
 module.exports = {
   version: "5.0",
-  title: "ChatterBox",
-  description: "",
-  icon: "icon.png",
   menu: async (kernel, info) => {
     let installed = info.exists("installed.flag")
     let running = {
