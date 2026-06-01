@@ -147,3 +147,84 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🐛 Issues
 
 If you encounter any issues, please report them on the [GitHub Issues](https://github.com/PierrunoYT/chatterbox-tts-pinokio/issues) page.
+
+## 🔌 API Reference
+
+The Gradio app exposes a programmatic API once running. Replace `7860` with the actual port shown in the Pinokio terminal.
+
+### Python (gradio_client)
+
+```python
+from gradio_client import Client, handle_file
+
+client = Client("http://127.0.0.1:7860")
+
+result = client.predict(
+    model_choice="⚡ Turbo (Fastest, English)",
+    text="Hello, this is a test.",
+    reference_audio=None,
+    exaggeration=0.5,
+    cfg_value=0.5,
+    temperature=0.8,
+    min_p=0.05,
+    top_p=0.95,
+    repetition_penalty=1.2,
+    top_k=1000,
+    norm_loudness=True,
+    language_code="auto",
+    output_filename="output.wav",
+    api_name="/generate_speech",
+)
+# result is (audio_filepath, status_message)
+print(result)
+```
+
+### JavaScript (fetch)
+
+```javascript
+const response = await fetch("http://127.0.0.1:7860/call/generate_speech", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    data: [
+      "⚡ Turbo (Fastest, English)", // model_choice
+      "Hello, this is a test.",      // text
+      null,                          // reference_audio
+      0.5,                           // exaggeration
+      0.5,                           // cfg_value
+      0.8,                           // temperature
+      0.05,                          // min_p
+      0.95,                          // top_p
+      1.2,                           // repetition_penalty
+      1000,                          // top_k
+      true,                          // norm_loudness
+      "auto",                        // language_code
+      "output.wav"                   // output_filename
+    ]
+  })
+});
+const { event_id } = await response.json();
+
+// Poll for result
+const resultResponse = await fetch(`http://127.0.0.1:7860/call/generate_speech/${event_id}`);
+const text = await resultResponse.text();
+console.log(text);
+```
+
+### curl
+
+```bash
+# Submit the request
+EVENT_ID=$(curl -s -X POST http://127.0.0.1:7860/call/generate_speech \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      "⚡ Turbo (Fastest, English)",
+      "Hello, this is a test.",
+      null, 0.5, 0.5, 0.8, 0.05, 0.95, 1.2, 1000, true, "auto", "output.wav"
+    ]
+  }' | python3 -c "import sys,json; print(json.load(sys.stdin)['event_id'])")
+
+# Retrieve the result
+curl -s http://127.0.0.1:7860/call/generate_speech/$EVENT_ID
+```

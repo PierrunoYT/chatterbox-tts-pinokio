@@ -23,5 +23,11 @@ module.exports = {
         path: "app",
       }
     }
+  }, {
+    method: "fs.write",
+    params: {
+      path: "installed.flag",
+      text: "ok"
+    }
   }]
 }
