@@ -4,6 +4,7 @@ import devicetorch
 import torch
 import time
 import os
+import re
 from pathlib import Path
 
 # Output directory
@@ -137,7 +138,11 @@ def generate_speech(
 
         if not output_filename:
             output_filename = f"chatterbox_{model_key}_{int(time.time())}.wav"
-        if not output_filename.endswith(".wav"):
+        # Strip any path components so user input can't escape output_dir (e.g. "../../x")
+        output_filename = Path(output_filename).name
+        # Strip characters that are invalid in Windows filenames
+        output_filename = re.sub(r'[<>:"|?*]', "_", output_filename)
+        if not output_filename or not output_filename.endswith(".wav"):
             output_filename += ".wav"
 
         output_path = output_dir / output_filename
