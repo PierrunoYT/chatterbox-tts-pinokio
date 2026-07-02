@@ -9,6 +9,7 @@ module.exports = {
         path: "app",
         env: {
           GRADIO_SERVER_PORT: "{{port}}"
+          // HF_TOKEN: "hf_xxx"  // Uncomment and set your token here for gated models (see README)
         },                   // Edit this to customize environment variables (see documentation)
         message: [
           "python app.py",    // Edit with your custom commands

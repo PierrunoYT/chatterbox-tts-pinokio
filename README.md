@@ -44,12 +44,13 @@ cd chatterbox-tts-pinokio
 cd app
 pip install -r requirements.txt
 ```
+> **Note:** This installs a default `torch` build only. For GPU acceleration (NVIDIA/AMD), install the matching `torch` build for your platform afterward — see the `when` blocks in `torch.js` at the repo root for the exact commands per platform. The Pinokio install flow (`install.js`) does this automatically.
 
 3. (Optional) For Chatterbox-Turbo model access, login to Hugging Face:
 ```bash
 huggingface-cli login
 ```
-Or set the HF_TOKEN environment variable in `start.js`.
+Or set `HF_TOKEN` in the `env` block of `start.js` (there's a commented-out example line to uncomment).
 
 4. Run the application:
 ```bash
@@ -86,7 +87,7 @@ python app.py
 2. Enter text in any supported language (auto-detected)
 3. Optionally specify language code for better accuracy
 
-## � Supported Languages (Multilingual Model)
+## 🌍 Supported Languages (Multilingual Model)
 
 Arabic (ar) • Danish (da) • German (de) • Greek (el) • English (en) • Spanish (es) • Finnish (fi) • French (fr) • Hebrew (he) • Hindi (hi) • Italian (it) • Japanese (ja) • Korean (ko) • Malay (ms) • Dutch (nl) • Norwegian (no) • Polish (pl) • Portuguese (pt) • Russian (ru) • Swedish (sv) • Swahili (sw) • Turkish (tr) • Chinese (zh)
 
