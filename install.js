@@ -17,7 +17,7 @@ module.exports = {
         path: "app",
         message: [
           "python -c \"import platform, sys; assert (3, 10) <= sys.version_info[:2] < (3, 14), 'Use Python 3.10-3.13; reset to recreate the environment'; assert not (sys.platform == 'darwin' and platform.machine() == 'x86_64'), 'Chatterbox requires Apple Silicon on macOS'\"",
-          "uv pip install \"numpy<2; python_version < '3.13'\" \"numpy>=2; python_version >= '3.13'\" setuptools wheel",
+          "uv pip install \"numpy<2; python_version < '3.13'\" \"numpy>=2; python_version >= '3.13'\" setuptools wheel \"uv_build~=0.12.7\"",
           "uv pip install -r requirements.txt --no-build-isolation"
         ],
       }

@@ -52,6 +52,12 @@ test('install and reset invalidate completion before changing the environment', 
   assert.equal(update.run[1].params.uri, 'install.js')
 })
 
+test('install preloads Perth build dependencies before disabling isolation', () => {
+  const commands = install.run[1].params.message
+  assert.match(commands[1], /uv_build~=0\.12\.7/)
+  assert.match(commands[2], /--no-build-isolation/)
+})
+
 test('platform routing selects compatible torch builds with dependencies', () => {
   const cases = [
     ['win32', 'x64', 'nvidia', 'cu124'],
