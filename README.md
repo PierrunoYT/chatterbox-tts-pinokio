@@ -52,7 +52,7 @@ python -m pip install -r requirements.txt
 
 3. (Optional) For Chatterbox-Turbo model access, login to Hugging Face:
 ```bash
-huggingface-cli login
+hf auth login
 ```
 Or set `HF_TOKEN` in the `env` block of `start.js` (there's a commented-out example line to uncomment).
 
