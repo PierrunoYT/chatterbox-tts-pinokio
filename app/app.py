@@ -11,8 +11,38 @@ from pathlib import Path
 output_dir = Path(__file__).resolve().parent / "outputs"
 output_dir.mkdir(exist_ok=True)
 
+
+def cuda_arch_supported(capability, arch_list):
+    """Whether torch ships kernels usable on a GPU of the given (major, minor) capability.
+
+    Kernels (sm_XY) run on the same major capability with an equal or newer minor
+    version; PTX (compute_XY) can be JIT-compiled for any newer GPU.
+    """
+    major, minor = capability
+    for arch in arch_list:
+        match = re.fullmatch(r"(sm|compute)_(\d+)[a-z]?", arch)
+        if not match:
+            continue
+        kind, cc = match[1], int(match[2])
+        if kind == "sm" and cc // 10 == major and cc % 10 <= minor:
+            return True
+        if kind == "compute" and cc <= major * 10 + minor:
+            return True
+    return False
+
+
 # Device detection
 device = devicetorch.get(torch)
+if "cuda" in str(device):
+    # torch 2.6 (pinned by Chatterbox) ships no kernels for newer GPUs such as
+    # RTX 50-series; fall back to CPU instead of failing on first generation.
+    major, minor = torch.cuda.get_device_capability(0)
+    if not cuda_arch_supported((major, minor), torch.cuda.get_arch_list()):
+        print(
+            f"WARNING: {torch.cuda.get_device_name(0)} (sm_{major}{minor}) is not supported "
+            f"by torch {torch.__version__}; falling back to CPU."
+        )
+        device = "cpu"
 print(f"Using device: {device}")
 if str(device) == "cpu":
     print("Running on CPU - generation will be slow.")

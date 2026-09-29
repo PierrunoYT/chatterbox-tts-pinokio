@@ -30,7 +30,7 @@ Chatterbox is a family of three state-of-the-art, open-source text-to-speech mod
 
 - Python 3.10–3.13 (Pinokio creates a Python 3.11 environment)
 - CUDA-compatible GPU (recommended) or CPU
-- Windows, Linux, or Apple Silicon macOS. Intel Macs are unsupported by the required PyTorch version. AMD on Windows uses CPU; supported AMD GPUs on Linux use ROCm.
+- Windows, Linux, or Apple Silicon macOS. Intel Macs are unsupported by the required PyTorch version. AMD on Windows uses CPU; supported AMD GPUs on Linux use ROCm. NVIDIA RTX 50-series (Blackwell) GPUs are not supported by the PyTorch 2.6 build Chatterbox requires, so the app falls back to CPU on them.
 
 ### Installation
 

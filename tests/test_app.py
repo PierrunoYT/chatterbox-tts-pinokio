@@ -90,6 +90,14 @@ class AppTests(unittest.TestCase):
             self.assertEqual(Path(path).parent, tts.output_dir)
             self.assertEqual(Path(path).suffix, ".wav")
 
+    def test_cuda_arch_support(self):
+        torch26 = ["sm_50", "sm_60", "sm_70", "sm_75", "sm_80", "sm_86", "sm_90"]
+        self.assertTrue(tts.cuda_arch_supported((8, 9), torch26))  # RTX 40 via sm_86
+        self.assertTrue(tts.cuda_arch_supported((8, 6), torch26))
+        self.assertFalse(tts.cuda_arch_supported((12, 0), torch26))  # RTX 50
+        self.assertTrue(tts.cuda_arch_supported((12, 0), torch26 + ["compute_90"]))
+        self.assertTrue(tts.cuda_arch_supported((9, 0), ["sm_90a"]))
+
     def test_failed_save_removes_partial_file(self):
         tts.ta.save.side_effect = RuntimeError("disk full")
         path, status = self.generate()
