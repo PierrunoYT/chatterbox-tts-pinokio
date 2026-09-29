@@ -481,4 +481,5 @@ with gr.Blocks(title="Chatterbox TTS") as app:
 
 if __name__ == "__main__":
     print(f"\nChatterbox TTS - {device}")
-    app.launch(server_name="127.0.0.1", theme=gr.themes.Soft(), css=css, show_error=True)
+    # Binds to 127.0.0.1 by default; set GRADIO_SERVER_NAME (see start.js) to change it.
+    app.launch(theme=gr.themes.Soft(), css=css, show_error=True)
