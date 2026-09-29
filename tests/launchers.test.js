@@ -56,6 +56,7 @@ test('install preloads Perth build dependencies before disabling isolation', () 
   const commands = install.run[1].params.message
   assert.match(commands[1], /uv_build~=0\.12\.7/)
   assert.match(commands[2], /--no-build-isolation/)
+  assert.match(commands[2], /--override overrides\.txt/)
 })
 
 test('platform routing selects compatible torch builds with dependencies', () => {

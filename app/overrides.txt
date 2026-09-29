@@ -1,0 +1,3 @@
+# Pins transitive dependencies that upstream Chatterbox leaves on a moving branch.
+# Keep Perth's build backend (uv_build) in sync with install.js when bumping.
+resemble-perth @ git+https://github.com/resemble-ai/Perth.git@ff1c8ac55a976971245cdd53c18d6131ca00d993
