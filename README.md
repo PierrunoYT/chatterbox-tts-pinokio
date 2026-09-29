@@ -71,24 +71,24 @@ In Pinokio, use **Install**, then **Start**. **Update** pulls launcher changes a
 1. Select your preferred model (Turbo, Multilingual, or Original)
 2. Enter your text in the input field
 3. Adjust emotion and CFG settings as desired
-4. Click "Generate Speech"
+4. Click "🎵 Generate"
 5. Download your generated audio
 
 ### Turbo Model with Paralinguistic Tags
-1. Select "Chatterbox-Turbo" model
+1. Select the "⚡ Turbo (Fastest, English)" model
 2. Use tags in your text for added realism:
    - `[laugh]`, `[chuckle]`, `[cough]`, `[sigh]`
    - Example: "Hi there! [chuckle] Let me tell you something funny."
 3. Generate ultra-fast, realistic speech
 
 ### Voice Cloning
-1. Upload a reference audio file (10+ seconds recommended)
+1. Upload a reference audio file (10+ seconds recommended; Turbo requires more than 5 seconds)
 2. Enter your text
 3. Adjust settings
 4. Generate speech with the cloned voice
 
 ### Multilingual Support
-1. Select "Chatterbox-Multilingual" model
+1. Select the "🌍 Multilingual (23+ Languages)" model
 2. Enter text in any supported language (up to 300 characters)
 3. Select the language matching your text
 
@@ -99,8 +99,8 @@ Arabic (ar) • Danish (da) • German (de) • Greek (el) • English (en) • 
 ## 🎨 Settings
 
 - **Model Selection**: Choose between Turbo (fastest), Multilingual (23+ languages), or Original (best quality)
-- **Emotion Exaggeration**: Controls how expressive the speech is (0.0 = calm, 1.0 = very expressive)
-- **CFG Scale**: Controls speech pacing (0.0 = slower/deliberate, 1.0 = faster/natural)
+- **Exaggeration** (Original / Multilingual): Controls how expressive the speech is (0.0 = calm, 0.5 = default, up to 2.0 = very dramatic)
+- **CFG** (Original / Multilingual): Controls speech pacing (0.0 = slower/deliberate, 1.0 = faster/natural)
 - **Paralinguistic Tags** (Turbo only): `[laugh]`, `[chuckle]`, `[cough]`, `[sigh]` for added realism
 
 ## 📁 Project Structure
