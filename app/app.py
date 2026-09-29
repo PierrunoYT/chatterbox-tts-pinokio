@@ -229,7 +229,8 @@ def get_audio_info(audio_file):
     try:
         waveform, sr = ta.load(audio_file)
         dur = waveform.shape[1] / sr
-        return f"Duration: {dur:.1f}s · {sr} Hz · {'Mono' if waveform.shape[0] == 1 else 'Stereo'}"
+        channels = {1: "Mono", 2: "Stereo"}.get(waveform.shape[0], f"{waveform.shape[0]} channels")
+        return f"Duration: {dur:.1f}s · {sr} Hz · {channels}"
     except Exception as e:
         return f"Error: {e}"
 

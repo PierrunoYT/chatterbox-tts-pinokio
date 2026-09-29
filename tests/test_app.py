@@ -104,6 +104,12 @@ class AppTests(unittest.TestCase):
         self.assertEqual(list(tts._models), ["original"])
         self.assertEqual(list(tts._default_conditionals), ["original"])
 
+    def test_audio_info_channel_labels(self):
+        for count, label in ((1, "Mono"), (2, "Stereo"), (6, "6 channels")):
+            waveform = MagicMock(shape=(count, 48000))
+            with patch.object(tts.ta, "load", return_value=(waveform, 24000)):
+                self.assertTrue(tts.get_audio_info("ref.wav").endswith(label))
+
     def test_cuda_arch_support(self):
         torch26 = ["sm_50", "sm_60", "sm_70", "sm_75", "sm_80", "sm_86", "sm_90"]
         self.assertTrue(tts.cuda_arch_supported((8, 9), torch26))  # RTX 40 via sm_86
