@@ -53,10 +53,11 @@ test('install and reset invalidate completion before changing the environment', 
 })
 
 test('install preloads Perth build dependencies before disabling isolation', () => {
-  const commands = install.run[1].params.message
-  assert.match(commands[1], /uv_build~=0\.12\.7/)
-  assert.match(commands[2], /--no-build-isolation/)
-  assert.match(commands[2], /--override overrides\.txt/)
+  const [, prepare, torchStep, requirements] = install.run
+  assert.match(prepare.params.message[1], /uv_build~=0\.12\.7/)
+  assert.equal(torchStep.params.uri, 'torch.js')
+  assert.match(requirements.params.message, /--no-build-isolation/)
+  assert.match(requirements.params.message, /--override overrides\.txt/)
 })
 
 test('platform routing selects compatible torch builds with dependencies', () => {
