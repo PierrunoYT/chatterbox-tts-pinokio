@@ -111,7 +111,6 @@ chatterbox-tts-pinokio/
 │   ├── app.py           # Main Gradio application
 │   ├── requirements.txt # Python dependencies
 │   ├── overrides.txt    # uv overrides pinning upstream's unpinned dependencies
-│   ├── pyproject.toml   # UV / build hints
 │   └── outputs/         # Generated audio (created at runtime)
 ├── install.js, start.js, …  # Pinokio launcher scripts (repo root)
 └── icon.png             # Application icon (optional)
