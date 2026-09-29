@@ -155,7 +155,6 @@ def generate_speech(
         if model_key == "turbo":
             params.update(
                 temperature=temperature,
-                min_p=min_p,
                 top_p=top_p,
                 top_k=int(top_k),
                 repetition_penalty=repetition_penalty,
@@ -356,7 +355,7 @@ with gr.Blocks(title="Chatterbox TTS") as app:
                     **Quick tips**
                     - First generation is slower (model download + load)
                     - Turbo tags: `[laugh]` `[chuckle]` `[cough]` `[sigh]`
-                    - Voice clone works best with 10 s+ clean speech
+                    - Voice clone works best with 10 s+ clean speech (Turbo requires over 5 s)
                     """)
 
             # ── Row 2: Voice clone (left) + Parameters (right) ──────────────
@@ -364,7 +363,7 @@ with gr.Blocks(title="Chatterbox TTS") as app:
                 with gr.Column(scale=5):
                     gr.Markdown("### Voice clone (optional)")
                     reference_audio = gr.Audio(
-                        label="Reference audio (10 s+)", type="filepath"
+                        label="Reference audio (10 s+; Turbo requires over 5 s)", type="filepath"
                     )
                     audio_info = gr.Textbox(
                         label="Info", interactive=False, max_lines=1
@@ -397,12 +396,12 @@ with gr.Blocks(title="Chatterbox TTS") as app:
                             1, 2, 1.2, step=0.05, label="Rep. Penalty"
                         )
                     with gr.Row():
-                        min_p = gr.Slider(0, 1, 0.05, step=0.01, label="Min-P")
+                        min_p = gr.Slider(0, 1, 0.05, step=0.01, label="Min-P (Original / Multilingual)")
                         top_p = gr.Slider(0, 1, 0.95, step=0.05, label="Top-P")
                     with gr.Row():
                         top_k = gr.Slider(0, 1000, 1000, step=10, label="Top-K (Turbo)")
                         norm_loudness = gr.Checkbox(
-                            True, label="Normalize loudness (Turbo)"
+                            True, label="Normalize reference loudness (Turbo)"
                         )
 
         # ── Guide Tab ───────────────────────────────────────────────────────

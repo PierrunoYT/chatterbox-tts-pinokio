@@ -58,6 +58,11 @@ class AppTests(unittest.TestCase):
         self.assertEqual(kwargs["min_p"], .05)
         self.assertEqual(kwargs["top_p"], .95)
 
+    def test_turbo_omits_unsupported_min_p(self):
+        path, status = self.generate("turbo")
+        self.assertIsNotNone(path, status)
+        self.assertNotIn("min_p", self.model.generate.call_args.kwargs)
+
     def test_invalid_requests_do_not_generate(self):
         for overrides in ({"text": " "}, {"text": "x" * 301}, {"language_code": "auto"}):
             path, _ = self.generate("multilingual", **overrides)
