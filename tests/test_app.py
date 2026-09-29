@@ -90,6 +90,15 @@ class AppTests(unittest.TestCase):
             self.assertEqual(Path(path).parent, tts.output_dir)
             self.assertEqual(Path(path).suffix, ".wav")
 
+    def test_switching_models_unloads_previous(self):
+        tts._models.pop("original")
+        loaded = MagicMock(conds={"voice": "default"})
+        module = MagicMock(ChatterboxTTS=MagicMock(from_pretrained=lambda _: loaded))
+        with patch.dict(sys.modules, {"chatterbox": MagicMock(), "chatterbox.tts": module}):
+            self.assertIs(tts._get_model("original"), loaded)
+        self.assertEqual(list(tts._models), ["original"])
+        self.assertEqual(list(tts._default_conditionals), ["original"])
+
     def test_cuda_arch_support(self):
         torch26 = ["sm_50", "sm_60", "sm_70", "sm_75", "sm_80", "sm_86", "sm_90"]
         self.assertTrue(tts.cuda_arch_supported((8, 9), torch26))  # RTX 40 via sm_86

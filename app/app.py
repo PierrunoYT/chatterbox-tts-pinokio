@@ -2,6 +2,7 @@ import gradio as gr
 import torchaudio as ta
 import devicetorch
 import torch
+import gc
 import re
 from copy import deepcopy
 from uuid import uuid4
@@ -57,9 +58,17 @@ _default_conditionals = {}
 
 
 def _get_model(key):
-    """Load a model on first use and cache it."""
+    """Load a model on first use and cache it, keeping only one model in memory."""
     if key in _models:
         return _models[key]
+
+    # Free the previously loaded model so switching models doesn't exhaust VRAM.
+    if _models:
+        _models.clear()
+        _default_conditionals.clear()
+        gc.collect()
+        if "cuda" in str(device):
+            torch.cuda.empty_cache()
 
     if key == "turbo":
         from chatterbox.tts_turbo import ChatterboxTurboTTS
@@ -127,7 +136,7 @@ def generate_speech(
     if model_key not in _models:
         yield (
             None,
-            f"⏳ Downloading & loading {model_choice} model… (first use only, may take a minute)",
+            f"⏳ Loading {model_choice} model… (downloads on first use, may take a minute)",
         )
 
     try:
